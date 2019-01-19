@@ -4,6 +4,7 @@ import IFoodPreferenceData from './IFoodPreferenceData';
 export default interface IDatastoreMenuItem extends IMenuItem, IFoodPreferenceData {
     nameLower: string;
     venue: string;
+    time: number;
     formattedDate: string;
     meal: number;
     // search name
