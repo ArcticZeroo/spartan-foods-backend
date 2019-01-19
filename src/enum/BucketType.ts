@@ -1,0 +1,4 @@
+enum BucketType {
+    staging,
+    production
+}

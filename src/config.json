@@ -1,0 +1,5 @@
+{
+  "GCLOUD_PROJECT": "msu-food-search",
+  "DATA_BACKEND": "datastore",
+  "KEY_FILE_PATH": "C:\\projects\\spartan-foods-backend\\vault\\msu-food-search-7ce9d5a1ae5a.json"
+}
