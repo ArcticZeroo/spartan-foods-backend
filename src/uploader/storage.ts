@@ -32,17 +32,25 @@ async function retrieveMenusForDayAndSave(day: MenuDate) {
     const menusToSave: IDataStoreEntity[] = [];
 
     const halls = Object.keys(menusForDay);
-    const menuItemKey = datastore.key(['MenuItem']);
 
     for (const diningHall of halls) {
         const meals = menusForDay[diningHall];
 
         for (let meal = 0; meal < meals.length; ++meal) {
+            const menuItemKey = datastore.key(['MenuItem']);
             const menu = meals[meal];
 
             for (const venue of menu.venues) {
+                const usedNames = {};
+
                 for (const item of venue.menu) {
                     const foodPreferenceData = FoodUtil.getFoodPreferenceData(item);
+
+                    if (usedNames.hasOwnProperty(item.name.toLowerCase())) {
+                        continue;
+                    }
+
+                    usedNames[item.name.toLowerCase()] = true;
 
                     const dataStoreMenuItem: IDatastoreMenuItem = {
                         name: item.name,
