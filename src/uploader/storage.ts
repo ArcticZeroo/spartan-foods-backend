@@ -1,17 +1,16 @@
 import { FoodFrozorClient, IFoodClient, IMenusForDay } from '@arcticzeroo/spartan-foods-api/dist';
 import MenuDate from '@arcticzeroo/spartan-foods-api/dist/date/MenuDate';
 import { Datastore } from '@google-cloud/datastore';
-import config from '../../config.json';
-import IDataStoreEntity from '../models/datastore/IDataStoreEntity';
-import IDatastoreMenuItem from '../models/food/IDatastoreMenuItem';
-import DataStoreUtil from '../util/DataStoreUtil';
+import IMongoMenuItem from '../models/food/IMongoMenuItem';
+import Repository from '../repository/Repository';
 import FoodUtil from '../util/FoodUtil';
-
-const datastore = new Datastore({
-    keyFilename: config.KEY_FILE_PATH
-});
+import { MenuItem } from '../repository/models/food/MenuItem';
 
 const foodClient: IFoodClient = new FoodFrozorClient();
+
+async function saveMenuItems(menuItems: IMongoMenuItem[]) {
+    return MenuItem.insertMany(menuItems);
+}
 
 async function retrieveMenusForDayAndSave(day: MenuDate) {
     console.log('Retrieving menus for day');
@@ -29,9 +28,8 @@ async function retrieveMenusForDayAndSave(day: MenuDate) {
     console.log('Got them');
 
     const formattedDate = day.getFormatted();
-    const time = day.date.getTime();
 
-    const menusToSave: IDataStoreEntity[] = [];
+    const menusToSave: IMongoMenuItem[] = [];
 
     const halls = Object.keys(menusForDay);
 
@@ -39,7 +37,6 @@ async function retrieveMenusForDayAndSave(day: MenuDate) {
         const meals = menusForDay[diningHall];
 
         for (let meal = 0; meal < meals.length; ++meal) {
-            const menuItemKey = datastore.key(['MenuItem']);
             const menu = meals[meal];
 
             for (const venue of menu.venues) {
@@ -54,26 +51,24 @@ async function retrieveMenusForDayAndSave(day: MenuDate) {
 
                     usedNames[item.name.toLowerCase()] = true;
 
-                    const dataStoreMenuItem: IDatastoreMenuItem = {
+                    const dataStoreMenuItem: IMongoMenuItem = {
                         name: item.name,
                         nameLower: item.name.toLowerCase(),
                         venue: venue.venueName,
                         preferences: item.preferences,
                         allergens: item.allergens,
                         ...foodPreferenceData,
-                        formattedDate, diningHall, meal, time
+                        formattedDate, diningHall, meal
                     };
 
-                    menusToSave.push(DataStoreUtil.createEntity<IDatastoreMenuItem>(menuItemKey, dataStoreMenuItem, { excludeIndexing: ['preferences', 'allergens', 'venueName', 'name'] }));
+                    menusToSave.push(dataStoreMenuItem);
                 }
             }
         }
     }
 
-    console.log(`Preparing to save ${menusToSave.length} menus (${Math.ceil(menusToSave.length / 500)} chunk(s))`);
-
     try {
-        await DataStoreUtil.saveLotsOfEntities(datastore, menusToSave);
+        await saveMenuItems(menusToSave);
     } catch (e) {
         throw e;
     }
@@ -84,7 +79,7 @@ async function retrieveMenusForDayAndSave(day: MenuDate) {
 async function retrieveAndSaveMenus() {
     const menuDate = new MenuDate();
 
-    for (let i = 0; i < 7; ++i) {
+    for (let i = 0; i <= 7; ++i) {
         console.log('Retrieving menu for day', i);
 
         console.log(menuDate.getFormatted());
@@ -101,4 +96,4 @@ async function retrieveAndSaveMenus() {
     }
 }
 
-retrieveAndSaveMenus().catch(console.error);
+Repository.instance.onReady(() => retrieveAndSaveMenus().catch(console.error));
