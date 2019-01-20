@@ -1,6 +1,5 @@
 import { FoodFrozorClient, IFoodClient, IMenusForDay } from '@arcticzeroo/spartan-foods-api/dist';
 import MenuDate from '@arcticzeroo/spartan-foods-api/dist/date/MenuDate';
-import { Datastore } from '@google-cloud/datastore';
 import IMongoMenuItem from '../models/food/IMongoMenuItem';
 import Repository from '../repository/Repository';
 import FoodUtil from '../util/FoodUtil';
