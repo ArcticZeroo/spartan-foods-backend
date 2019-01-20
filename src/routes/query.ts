@@ -1,3 +1,4 @@
+import MenuDate from '@arcticzeroo/spartan-foods-api/dist/date/MenuDate';
 import { MealRange } from '@arcticzeroo/spartan-foods-api/dist/enum/Meal';
 import { Application, Request, Response } from 'express';
 import { IMenuItemModel, MenuItem } from '../repository/models/food/MenuItem';
@@ -56,6 +57,14 @@ export default function useQueryRoute(app: Application) {
         if (req.query.dateExact && MENU_DATE_REGEX.test(req.query.dateExact)) {
             // todo
         }
+
+        if (!query.time) {
+            const menuDate = new MenuDate();
+            menuDate.back();
+
+            query.time = { $gt: menuDate.date.getTime() };
+        }
+
 
         if (req.query.meal) {
             if (!isNaN(req.query.meal)) {
