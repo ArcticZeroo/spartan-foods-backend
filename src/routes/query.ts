@@ -83,11 +83,11 @@ export default function useQueryRoute(app: Application) {
         }
 
         // TODO: Configuration
-        const limit = 50;
+        // const limit = 50;
 
         MenuItem.find(query, { _id: false, __v: false })
             .sort({ time: 1, meal: 1 })
-            .limit(limit)
+            // .limit(limit)
             .then((docs: IMenuItemModel[] = []) => res.status(200).json(docs))
             .catch(() => res.status(500).send('Internal Server Error'));
     });
