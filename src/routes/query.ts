@@ -27,7 +27,7 @@ function handleBooleanQuery(query: any, queryParam: string, req: Request, reqQue
 }
 
 export default function useQueryRoute(app: Application) {
-    app.use('/api/menu/search', function (req, res) {
+    app.use('/spartahack/api/menu/search', function (req, res) {
         const nameQuery = req.query.name;
 
         if (!nameQuery || !nameQuery.trim()) {
