@@ -97,4 +97,5 @@ async function retrieveAndSaveMenus() {
     }
 }
 
+Repository.instance.start();
 Repository.instance.onReady(() => retrieveAndSaveMenus().catch(console.error));

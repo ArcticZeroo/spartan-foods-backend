@@ -1,6 +1,9 @@
+import Logger from 'frozor-logger';
 import mongoose from 'mongoose';
 import databaseConfig from '../../vault/database.json';
 import ReadyState from '../enum/ReadyState';
+
+const log = new Logger('DATABASE');
 
 type onReadyCallback = () => void;
 
@@ -17,14 +20,7 @@ export default class Repository {
         return mongoose.connection.readyState === ReadyState.connected;
     }
 
-    private constructor() {
-        this.connect()
-            .then(() => {
-                this.onReadyCallbacks.forEach(callback => callback());
-                this.onReadyCallbacks.splice(0);
-            })
-            .catch(e => console.error('Could not connect to mongodb:', e));
-    }
+    private constructor() {}
 
     private connect(): Promise<void> {
         // @ts-ignore - Unsure why this is an error, it's correct according to docs
@@ -44,5 +40,17 @@ export default class Repository {
        }
 
        this.onReadyCallbacks.push(callback);
+    }
+
+    public start(): void {
+        log.info('Starting database...');
+
+        this.connect()
+            .then(() => {
+                log.info('Connected to MongoDB!');
+                this.onReadyCallbacks.forEach(callback => callback());
+                this.onReadyCallbacks.splice(0);
+            })
+            .catch(e => console.error('Could not connect to mongodb:', e));
     }
 }
