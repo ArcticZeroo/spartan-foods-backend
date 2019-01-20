@@ -1,6 +1,7 @@
 import { MealRange } from '@arcticzeroo/spartan-foods-api/dist/enum/Meal';
 import { Application, Request, Response } from 'express';
 import { IMenuItemModel, MenuItem } from '../repository/models/food/MenuItem';
+import FoodUtil from '../util/FoodUtil';
 
 const MENU_DATE_REGEX = /\d{4}-\d{2}-\d{2}/;
 
@@ -56,11 +57,19 @@ export default function useQueryRoute(app: Application) {
             // todo
         }
 
-        if (req.query.meal && !isNaN(req.query.meal)) {
-            const meal = parseInt(query.meal);
+        if (req.query.meal) {
+            if (!isNaN(req.query.meal)) {
+                const meal: number = parseInt(req.query.meal);
 
-            if (meal >= MealRange.start && meal <= MealRange.end) {
-                query.meal = meal;
+                if (FoodUtil.isMealValid(meal)) {
+                    query.meal = meal;
+                }
+            } else if (req.query.meal.includes(',')) {
+                const pieces: string[] = req.query.meal.split(',');
+
+                const meals: number[] = pieces.map(p => parseInt(p)).filter(FoodUtil.isMealValid);
+
+                query.meal = { $in: meals };
             }
         }
 

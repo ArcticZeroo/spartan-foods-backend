@@ -1,4 +1,5 @@
 import { IMenuItem } from '@arcticzeroo/spartan-foods-api/dist';
+import { MealRange } from '@arcticzeroo/spartan-foods-api/dist/enum/Meal';
 import IFoodPreferenceData from '../models/food/IFoodPreferenceData';
 
 export default abstract class FoodUtil {
@@ -8,5 +9,9 @@ export default abstract class FoodUtil {
         const isGlutenFree = !item.allergens.some(value => value.toLowerCase().includes('gluten') || value.toLowerCase().includes('wheat'));
 
         return { isVegan, isVegetarian, isGlutenFree };
+    }
+
+    static isMealValid(meal: number): boolean {
+        return !isNaN(meal) && meal >= MealRange.start && meal <= MealRange.end;
     }
 }
