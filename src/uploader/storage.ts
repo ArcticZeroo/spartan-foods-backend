@@ -28,6 +28,7 @@ async function retrieveMenusForDayAndSave(day: MenuDate) {
     console.log('Got them');
 
     const formattedDate = day.getFormatted();
+    const time = day.date.getTime();
 
     const menusToSave: IMongoMenuItem[] = [];
 
@@ -58,7 +59,7 @@ async function retrieveMenusForDayAndSave(day: MenuDate) {
                         preferences: item.preferences,
                         allergens: item.allergens,
                         ...foodPreferenceData,
-                        formattedDate, diningHall, meal
+                        formattedDate, diningHall, meal, time
                     };
 
                     menusToSave.push(dataStoreMenuItem);

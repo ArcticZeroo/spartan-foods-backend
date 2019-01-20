@@ -7,6 +7,7 @@ export const MenuItemSchema: Schema = new Schema({
     name: String,
     nameLower: { type: String, index: true },
     venue: String,
+    time: { type: Number, index: true },
     formattedDate: { type: String, index: true },
     meal: { type: Number, index: true },
     diningHall: { type: String, index: true },
