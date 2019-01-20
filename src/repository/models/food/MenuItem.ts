@@ -6,6 +6,7 @@ export interface IMenuItemModel extends IMongoMenuItem, Document {}
 export const MenuItemSchema: Schema = new Schema({
     name: String,
     nameLower: { type: String, index: true },
+    nameCleaned: { type: String, index: true },
     venue: String,
     time: { type: Number, index: true },
     formattedDate: { type: String, index: true },

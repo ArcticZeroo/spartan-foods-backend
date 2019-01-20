@@ -54,6 +54,7 @@ async function retrieveMenusForDayAndSave(day: MenuDate) {
                     const dataStoreMenuItem: IMongoMenuItem = {
                         name: item.name,
                         nameLower: item.name.toLowerCase(),
+                        nameCleaned: FoodUtil.getCleanedName(item) || '',
                         venue: venue.venueName,
                         preferences: item.preferences,
                         allergens: item.allergens,

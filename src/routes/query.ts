@@ -38,6 +38,12 @@ export default function useQueryRoute(app: Application) {
             query.nameLower = new RegExp(nameQuery.toLowerCase());
         }
 
+        const nameCleanedQuery = req.query.nameCleaned;
+
+        if (nameCleanedQuery && nameCleanedQuery.trim()) {
+            query.nameCleaned = nameCleanedQuery;
+        }
+
         handleBooleanQuery(query, 'isGlutenFree', req);
         handleBooleanQuery(query, 'isVegan', req);
         handleBooleanQuery(query, 'isVegetarian', req);
@@ -85,7 +91,7 @@ export default function useQueryRoute(app: Application) {
         // TODO: Configuration
         // const limit = 50;
 
-        MenuItem.find(query, { _id: false, __v: false })
+        MenuItem.find(query, { _id: false, __v: false, nameLower: false, nameCleaned: false })
             .sort({ time: 1, meal: 1 })
             // .limit(limit)
             .then((docs: IMenuItemModel[] = []) => res.status(200).json(docs))
