@@ -28,15 +28,13 @@ function handleBooleanQuery(query: any, queryParam: string, req: Request, reqQue
 
 export default function useQueryRoute(app: Application) {
     app.use('/spartahack/api/menu/search', function (req, res) {
+        const query: any = {};
+
         const nameQuery = req.query.name;
 
-        if (!nameQuery || !nameQuery.trim()) {
-            return BadRequest(res);
+        if (nameQuery && nameQuery.trim()) {
+            query.nameLower = new RegExp(nameQuery.toLowerCase());
         }
-
-        const nameLower = new RegExp(nameQuery.toLowerCase());
-
-        const query: any = { nameLower };
 
         handleBooleanQuery(query, 'isGlutenFree', req);
         handleBooleanQuery(query, 'isVegan', req);
