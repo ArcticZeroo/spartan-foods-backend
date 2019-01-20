@@ -32,7 +32,7 @@ export default abstract class FoodUtil {
             return null;
         }
 
-        const pick = match[0];
+        const pick = match[1];
 
         if (!pick) {
             return null;
